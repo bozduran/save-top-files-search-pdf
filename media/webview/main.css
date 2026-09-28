@@ -1,0 +1,521 @@
+/* PDF Hub sidebar — styled entirely with VS Code theme variables so it matches
+   whatever theme (including high contrast) the user runs. */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size, 13px);
+  color: var(--vscode-foreground);
+  background: transparent;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  /* Zero the user-agent padding as well as the border: the border reset alone
+     left icon-only buttons with 1px 6px of padding, which shrank their glyphs. */
+  padding: 0;
+  cursor: pointer;
+}
+
+.hub {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 0 16px;
+}
+
+/* ------------------------------------------------------------------ toolbar */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+}
+
+.toolbar .title {
+  flex: 1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  opacity: 0.8;
+}
+
+.icon-button:hover {
+  background: var(--vscode-toolbar-hoverBackground, rgba(90, 93, 94, 0.31));
+  opacity: 1;
+}
+
+.icon-button svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+/* ------------------------------------------------------------------- search */
+
+.search {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 8px;
+}
+
+.search-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-row input[type='text'] {
+  width: 100%;
+  padding: 4px 26px 4px 8px;
+  color: var(--vscode-input-foreground);
+  background: var(--vscode-input-background);
+  border: 1px solid var(--vscode-input-border, transparent);
+  border-radius: 2px;
+  outline: none;
+}
+
+.search-row input[type='text']:focus {
+  border-color: var(--vscode-focusBorder);
+}
+
+.search-row .clear {
+  position: absolute;
+  right: 3px;
+  /* The global reset above removes the button border but not its user-agent
+     padding. Without an explicit reset the icon is laid out inside 1px 6px of
+     padding, so the glyph is squeezed into ~8px and looks oversized and
+     misaligned inside the search field. */
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  border-radius: 3px;
+  opacity: 0.7;
+}
+
+.search-row .clear svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.search-row .clear:hover {
+  opacity: 1;
+  background: var(--vscode-toolbar-hoverBackground, rgba(90, 93, 94, 0.31));
+}
+
+.search-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  opacity: 0.9;
+  user-select: none;
+  cursor: pointer;
+}
+
+.toggle input {
+  margin: 0;
+  accent-color: var(--vscode-checkbox-background, #3c3c3c);
+}
+
+.hint {
+  padding: 0 8px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  opacity: 0.65;
+}
+
+.progress {
+  height: 2px;
+  margin: 0 8px;
+  background: var(--vscode-progressBar-background, #0e70c0);
+  opacity: 0.8;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  font-size: 11.5px;
+  opacity: 0.75;
+}
+
+.status .spinner {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ----------------------------------------------------------------- results */
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 6px;
+  max-height: 46vh;
+  overflow: auto;
+}
+
+.hit {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 5px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.hit:hover {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.hit:focus-visible {
+  border-color: var(--vscode-focusBorder);
+  outline: none;
+}
+
+.hit-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.hit-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hit-loc {
+  flex: none;
+  font-size: 11px;
+  opacity: 0.65;
+}
+
+.hit-path,
+.hit-excerpt {
+  font-size: 11.5px;
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hit-excerpt {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.hit-excerpt mark {
+  color: var(--vscode-editor-findMatchForeground, inherit);
+  background: var(--vscode-editor-findMatchHighlightBackground, rgba(234, 92, 0, 0.33));
+}
+
+.badge {
+  flex: none;
+  padding: 0 4px;
+  font-size: 10px;
+  line-height: 15px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--vscode-badge-background);
+  color: var(--vscode-badge-foreground);
+  opacity: 0.9;
+}
+
+/* ---------------------------------------------------------------- sections */
+
+.sections {
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  border-top: 1px solid var(--vscode-sideBarSectionHeader-border, rgba(128, 128, 128, 0.2));
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 8px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.section-header:hover {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.section-header .chevron {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  fill: currentColor;
+  transition: transform 0.12s ease;
+}
+
+.section.collapsed .chevron {
+  transform: rotate(-90deg);
+}
+
+.section-header .count {
+  margin-left: auto;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.7;
+}
+
+.section-body {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 4px;
+}
+
+.section.collapsed .section-body {
+  display: none;
+}
+
+.group-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px 2px;
+  font-size: 11.5px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.group-title .actions {
+  margin-left: auto;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+}
+
+.group-title:hover .actions,
+.group-title:focus-within .actions {
+  opacity: 1;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px 3px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.file-row:hover {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.file-row .name {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-row .detail {
+  flex: none;
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.file-row .row-actions {
+  flex: none;
+  display: none;
+  gap: 2px;
+}
+
+.file-row:hover .row-actions {
+  display: flex;
+}
+
+.file-icon {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+  opacity: 0.75;
+}
+
+.file-icon.pdf {
+  color: var(--vscode-charts-red, #e05252);
+  opacity: 0.95;
+}
+
+.empty {
+  padding: 2px 8px 6px;
+  font-size: 11.5px;
+  opacity: 0.6;
+}
+
+.error {
+  margin: 0 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  background: var(--vscode-inputValidation-errorBackground, rgba(255, 0, 0, 0.12));
+  border: 1px solid var(--vscode-inputValidation-errorBorder, transparent);
+}
+
+/* ---------------------------------------------------------- index progress */
+
+.index-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: var(--vscode-editorWidget-background, rgba(128, 128, 128, 0.08));
+}
+
+.index-progress-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+}
+
+.index-progress-head .index-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.index-progress-head .index-label strong {
+  font-weight: 600;
+}
+
+.progress-track {
+  height: 3px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--vscode-editorWidget-border, rgba(128, 128, 128, 0.3));
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--vscode-progressBar-background, #0e70c0);
+  transition: width 0.15s ease-out;
+}
+
+.index-detail {
+  display: flex;
+  gap: 8px;
+  font-size: 10.5px;
+  opacity: 0.65;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.index-detail span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* -------------------------------------------------------------- smart groups */
+
+.group-title.smart {
+  color: var(--vscode-charts-purple, #b180d7);
+}
+
+.group-title.smart.disabled {
+  opacity: 0.5;
+}
+
+.group-title .smart-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.group-icon {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.group-hint {
+  padding: 0 8px 3px 22px;
+  font-size: 10.5px;
+  font-style: italic;
+  opacity: 0.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

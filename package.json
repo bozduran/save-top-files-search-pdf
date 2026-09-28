@@ -1,0 +1,301 @@
+{
+  "name": "pdf-hub",
+  "displayName": "PDF Hub: Search, Recent & Favorites",
+  "description": "Search PDF names and contents across the open project, see your most-opened files, and organize project + external favorites into named groups.",
+  "version": "0.2.1",
+  "publisher": "local-dev",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0",
+    "node": ">=18"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "pdf",
+    "search",
+    "favorites",
+    "recent",
+    "bookmarks"
+  ],
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#1F2430",
+    "theme": "dark"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "pdfHub",
+          "title": "PDF Hub",
+          "icon": "media/activity-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "pdfHub": [
+        {
+          "id": "pdfHub.main",
+          "name": "PDF Hub",
+          "type": "webview",
+          "contextualTitle": "PDF Hub"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "pdfHub.focus",
+        "title": "PDF Hub: Focus Sidebar",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.addToFavorites",
+        "title": "Add to Favorites",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.addSelectionToFavorites",
+        "title": "Add Selection to Favorites",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.removeFromFavorites",
+        "title": "Remove from Favorites",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.createGroup",
+        "title": "New Favorites Group...",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.renameGroup",
+        "title": "Rename Group...",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.deleteGroup",
+        "title": "Delete Group",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.addExternalFile",
+        "title": "Add External File (max 10)...",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.clearRecents",
+        "title": "Clear Recent Files",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.reindex",
+        "title": "Rebuild PDF Search Index",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.createSmartGroup",
+        "title": "New Smart Group (auto-collection)...",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.editSmartGroup",
+        "title": "Edit Smart Group...",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.deleteSmartGroup",
+        "title": "Delete Smart Group",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.toggleSmartGroup",
+        "title": "Enable/Disable Smart Group",
+        "category": "PDF Hub"
+      },
+      {
+        "command": "pdfHub.refreshSmartGroups",
+        "title": "Refresh Smart Groups",
+        "category": "PDF Hub"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "pdfHub.addToFavorites",
+          "when": "resourceScheme == file && explorerResourceIsFolder == false",
+          "group": "9_pdfhub@1"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "pdfHub.addToFavorites",
+          "when": "resourceScheme == file",
+          "group": "9_pdfhub@1"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "pdfHub.addSelectionToFavorites",
+          "when": "editorHasSelection && resourceScheme == file",
+          "group": "9_pdfhub@2"
+        },
+        {
+          "command": "pdfHub.addToFavorites",
+          "when": "resourceScheme == file",
+          "group": "9_pdfhub@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "pdfHub.focus"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "PDF Hub",
+      "properties": {
+        "pdfHub.search.scope": {
+          "type": "string",
+          "enum": [
+            "project",
+            "projectAndExternal"
+          ],
+          "enumDescriptions": [
+            "Search PDFs inside the current workspace folders only.",
+            "Also search the PDFs you added as external favorites."
+          ],
+          "default": "project",
+          "description": "Which PDFs the content search covers."
+        },
+        "pdfHub.search.maxFileSizeMb": {
+          "type": "number",
+          "default": 40,
+          "minimum": 1,
+          "description": "Skip PDFs larger than this when indexing contents."
+        },
+        "pdfHub.search.maxTextKbPerFile": {
+          "type": "number",
+          "default": 2048,
+          "minimum": 64,
+          "description": "Maximum extracted text kept per PDF (KB). Larger PDFs are truncated."
+        },
+        "pdfHub.search.excludeGlobs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/.git/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/out/**"
+          ],
+          "description": "Glob patterns excluded from PDF discovery."
+        },
+        "pdfHub.recent.maxItems": {
+          "type": "number",
+          "default": 15,
+          "minimum": 3,
+          "maximum": 50,
+          "description": "How many entries the 'Most Opened / Recent' section shows."
+        },
+        "pdfHub.recent.ranking": {
+          "type": "string",
+          "enum": [
+            "frequency",
+            "recent",
+            "hybrid"
+          ],
+          "enumDescriptions": [
+            "Rank purely by how often you opened a file.",
+            "Rank purely by the last time you opened a file.",
+            "Blend open count with recency (recommended)."
+          ],
+          "default": "hybrid",
+          "description": "How the top-files section is ordered."
+        },
+        "pdfHub.external.maxItems": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Hard cap for favorites that live outside the project."
+        },
+        "pdfHub.favorites.defaultGroupName": {
+          "type": "string",
+          "default": "Favorites",
+          "description": "Name used when you add a file and no other group exists yet."
+        },
+        "pdfHub.search.minChars": {
+          "type": "number",
+          "default": 2,
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Minimum characters before a content search starts."
+        },
+        "pdfHub.index.trigger": {
+          "type": "string",
+          "enum": [
+            "onDemand",
+            "onViewOpen",
+            "onStartup"
+          ],
+          "enumDescriptions": [
+            "Never index in the background. Indexing starts only when you search or run a command.",
+            "Index when the PDF Hub sidebar is opened, and when a PDF changes while it is open (recommended).",
+            "Also index shortly after a window opens, in the background."
+          ],
+          "default": "onViewOpen",
+          "markdownDescription": "When PDF text indexing may run. Unchanged PDFs are never re-read: a background pass only compares file dates and sizes and stops there."
+        },
+        "pdfHub.index.debounceMs": {
+          "type": "number",
+          "default": 1500,
+          "minimum": 250,
+          "maximum": 60000,
+          "description": "Wait this long after a PDF changes before re-indexing it, so bursts of saves coalesce."
+        },
+        "pdfHub.index.maxDelayMs": {
+          "type": "number",
+          "default": 10000,
+          "minimum": 1000,
+          "maximum": 600000,
+          "description": "Upper bound on how long indexing may be postponed by continuous PDF changes."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "test": "node scripts/run-tests.mjs",
+    "smoke": "node scripts/smoke-bundle.cjs && node scripts/smoke-pdf.mjs fixtures/sample.pdf",
+    "verify": "npm run check && npm run build && npm test && npm run smoke",
+    "fixture": "node scripts/make-test-pdf.mjs fixtures/sample.pdf",
+    "package": "npm run verify && node scripts/package.mjs",
+    "vscode:prepublish": "npm run typecheck && npm run build",
+    "check:imports": "node scripts/check-imports.mjs",
+    "check": "npm run check:imports && npm run typecheck",
+    "test:patterns": "node scripts/run-tests.mjs glob",
+    "test:visual": "node scripts/visual-check.mjs",
+    "test:visual:update": "node scripts/visual-check.mjs .visual"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.24.0",
+    "happy-dom": "^20.14.5",
+    "playwright": "^1.63.0",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "pdfjs-dist": "4.10.38"
+  }
+}

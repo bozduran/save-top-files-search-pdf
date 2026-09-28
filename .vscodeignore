@@ -1,0 +1,23 @@
+.vscode/**
+.vscode-test/**
+src/**
+scripts/**
+node_modules/**
+.npm-cache/**
+.npm-tmp/**
+.npm-logs/**
+.gitignore
+.git/**
+tsconfig.json
+esbuild.mjs
+fixtures/**
+**/*.map
+**/*.ts
+!media/webview/main.js
+!dist/standard_fonts/**
+.visual/**
+.pw-browsers/**
+# The packaged extension is committed to the repository; it must never be
+# picked up as an input for the next package.
+*.vsix
+.vsix-staging/**

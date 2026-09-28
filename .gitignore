@@ -1,0 +1,16 @@
+# Dependencies and sandbox-local tooling
+node_modules/
+.npm-cache/
+.npm-tmp/
+.npm-logs/
+
+# Local build/test scratch space
+.visual/
+.pw-browsers/
+
+# Built output and the packaged extension are committed on purpose, so a fresh
+# clone can install and test without a build step:
+#   dist/                    bundled extension plus the copied pdf.js assets
+#   media/webview/main.js    bundled sidebar script
+#   pdf-hub-<version>.vsix   sideloadable package
+# .vscodeignore keeps all of them, including the .vsix, out of the next package.

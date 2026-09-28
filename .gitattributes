@@ -1,0 +1,24 @@
+# Normalize text files on commit so the repository stays consistent across platforms.
+* text=auto eol=lf
+
+# Windows-only helper scripts keep CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# pdf.js ships these font metrics verbatim; they must never be re-encoded or
+# line-ending converted, or text extraction breaks.
+*.ttf binary
+*.pfb binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.vsix binary
+*.pdf binary
+
+# Keep generated bundles and lockfiles out of diffs.
+dist/ linguist-generated=true
+media/webview/main.js linguist-generated=true
+package-lock.json linguist-generated=true
