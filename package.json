@@ -277,7 +277,7 @@
     "watch": "node esbuild.mjs --watch",
     "test": "node scripts/run-tests.mjs",
     "smoke": "node scripts/smoke-bundle.cjs && node scripts/smoke-pdf.mjs fixtures/sample.pdf",
-    "verify": "npm run check && npm run build && npm test && npm run smoke",
+    "verify": "npm run audit && npm run check && npm run build && npm test && npm run smoke",
     "fixture": "node scripts/make-test-pdf.mjs fixtures/sample.pdf",
     "package": "npm run verify && node scripts/package.mjs",
     "vscode:prepublish": "npm run typecheck && npm run build",
@@ -285,7 +285,8 @@
     "check": "npm run check:imports && npm run typecheck",
     "test:patterns": "node scripts/run-tests.mjs glob",
     "test:visual": "node scripts/visual-check.mjs",
-    "test:visual:update": "node scripts/visual-check.mjs .visual"
+    "test:visual:update": "node scripts/visual-check.mjs .visual",
+    "audit": "npm audit --omit=dev --audit-level=high"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

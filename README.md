@@ -232,13 +232,15 @@ between windows.
 npm install
 npm run build       # bundle extension + webview
 npm run watch       # rebuild on change
-npm run verify      # typecheck + build + unit tests + smoke tests
+npm run verify      # dependency audit + typecheck + build + tests + smoke tests
 npm run package     # build a .vsix
 code --install-extension pdf-hub-0.2.1.vsix   # committed at the repo root
 ```
 
-Lean on `npm run verify` before pushing: it runs the import guard, typecheck,
-build, all tests and the smoke tests.
+Lean on `npm run verify` before pushing: it runs a dependency audit
+(`npm audit --omit=dev --audit-level=high`, so any high- or critical-severity
+vulnerability in the production dependencies fails the build), then the import
+guard, typecheck, build, all tests and the smoke tests.
 
 ### Test layout
 
@@ -300,9 +302,11 @@ regressions therefore fail without opening the editor.
 
 ### Continuous integration
 
-`.github/workflows/ci.yml` runs the import guard, typecheck, build, unit tests,
-smoke tests and packaging on Node 22 and 26, and uploads the `.vsix` as an
-artifact.
+`.github/workflows/ci.yml` runs a production-dependency audit
+(`npm audit --omit=dev --audit-level=high`), the import guard, typecheck, build,
+unit tests, smoke tests and packaging on Node 22 and 26, and uploads the `.vsix`
+as an artifact. A high- or critical-severity vulnerability fails the build, so a
+bad transitive dependency cannot reach a release.
 
 ## Notes and limits
 

@@ -44,6 +44,12 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Audit production dependencies
+        # Fails the build on any high- or critical-severity vulnerability so a
+        # bad transitive dependency cannot reach a release. Production deps only
+        # (dev tools like playwright never ship in the .vsix).
+        run: npm audit --omit=dev --audit-level=high
+
       - name: Check imports and reachability
         run: npm run check:imports
 
